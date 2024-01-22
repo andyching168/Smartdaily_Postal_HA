@@ -1,0 +1,2 @@
+# Smartdaily_Postal_HA
+將今網智生活的包裹領取狀態串接到Home Assistant的工具
