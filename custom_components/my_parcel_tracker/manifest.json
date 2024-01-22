@@ -1,0 +1,6 @@
+{
+    "domain": "my_parcel_tracker",
+    "name": "智生活包裹追蹤",
+    "version": "0.1.0",
+    "config_flow": true
+  }
