@@ -76,13 +76,13 @@ class PackageTrackerSensor(Entity):
         match = re.match(r"(\d+)小時以前", time_str)
         if match:
             hours_ago = int(match.group(1))
-            estimated_time = datetime.utcnow() - timedelta(hours=hours_ago)
-            # 转换为GMT+8时区
-            return (
-                pytz.utc.localize(estimated_time)
-                .astimezone(pytz.timezone("Asia/Taipei"))
-                .strftime("%Y/%m/%d %H:%M")
-            )
+            # 获取当前时间
+            now = datetime.now(pytz.timezone("Asia/Taipei"))
+            # 回退到最近的整点
+            now_at_hour = now.replace(minute=0, second=0, microsecond=0)
+            # 减去相对时间
+            estimated_time = now_at_hour - timedelta(hours=hours_ago)
+            return estimated_time.strftime("%Y/%m/%d %H:%M")
         else:
             # 如果是标准时间格式，假设它是UTC时间，转换为GMT+8时区
             try:
