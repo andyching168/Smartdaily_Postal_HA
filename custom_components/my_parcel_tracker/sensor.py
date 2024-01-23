@@ -141,6 +141,9 @@ class PackageTrackerSensor(Entity):
                     "p_name": latest_package["p_name"],
                     "postal_typeText": latest_package["postal_typeText"],
                     "transport_code": latest_package["transport_code"],
+                    "privacy": True
+                    if latest_package["privacy"] == "privacy"
+                    else False,
                     "p_note": latest_package["p_note"],
                 }
         else:
