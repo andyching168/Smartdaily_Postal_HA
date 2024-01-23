@@ -27,7 +27,7 @@
 "POST https://api.smartdaily.com.tw/api/Valid/ValidDeviceV2"
 ```
 
-從此請求的Response中複製`DeviceSn`的值。
+從此請求的Response中複製`DeviceSn(或DeviceCode)`的值。
 
 ### 通過HACS安裝
 
@@ -40,7 +40,7 @@
 1. 重新啟動您的Home Assistant。
 2. 在Home Assistant的“配置” > “整合”頁面上，點擊“添加集成”。
 3. 搜索“智生活包裹追蹤”並選擇它。
-4. 在出現的窗口中，輸入先前從封包中抓取的`DeviceSn`值。
+4. 在出現的窗口中，輸入先前從封包中抓取的`DeviceSn(或DeviceCode)`值。
 5. 點擊“提交”，並選擇自己的社區，完成設置。
 
 ## 使用
