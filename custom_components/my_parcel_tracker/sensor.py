@@ -1,20 +1,27 @@
 """Sensor platform for the package tracker component."""
 
+import asyncio
 from datetime import datetime, timedelta
 import re
+import aiohttp
 import requests
 import pytz
+from homeassistant.core import _LOGGER
+from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.const import CONF_API_KEY
 from homeassistant.helpers.entity import Entity
+from homeassistant.util import Throttle
 
 DOMAIN = "my_parcel_tracker"
 SCAN_INTERVAL = timedelta(minutes=5)
+MIN_TIME_BETWEEN_UPDATES = timedelta(hours=12)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the sensor based on a config entry."""
-    kingnet_auth = config_entry.data.get("KingnetAuth")
-    async_add_entities([PackageTrackerSensor(kingnet_auth, kingnet_auth)], True)
+    DeviceID = config_entry.data.get("DeviceID")
+    com_id = config_entry.data.get("com_id")
+    async_add_entities([PackageTrackerSensor(DeviceID, com_id)], True)
 
 
 class PackageTrackerSensor(Entity):
@@ -22,13 +29,57 @@ class PackageTrackerSensor(Entity):
 
     scan_interval = SCAN_INTERVAL
 
-    def __init__(self, kingnet_auth, unique_id):
+    def added_to_hass(self):
+        """When entity is added to hass."""
+        # 每隔一段时间自动刷新令牌
+        self.update_token()
+
+    def update_token(self):
+        """Update the KingnetAuth token."""
+        headers_update_token = {
+            "Host": "api.smartdaily.com.tw",
+            "Sec-Fetch-Site": "cross-site",
+            "Connection": "keep-alive",
+            "Sec-Fetch-Mode": "cors",
+            "Accept": "application/json, text/plain, */*",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+            "Accept-Language": "zh-TW,zh-Hant;q=0.9",
+            "Sec-Fetch-Dest": "empty",
+            "Accept-Encoding": "gzip, deflate, br",
+        }
+        response = requests.get(
+            "https://api.smartdaily.com.tw/api/Valid/getHashCodeV2?code="
+            + self._device_id,
+            headers=headers_update_token,
+        )
+        if response.status_code == 200:
+            print("Success!\nResult:\n")
+            print(response.text)
+            print("\n------Beautify------\n")
+            # 解析JSON數據
+            data = response.json()
+
+            KingnetAuthValue = "CommunityUser " + data["Data"]["token"]
+            self._kingnet_auth = KingnetAuthValue
+            print(self._kingnet_auth)
+        else:
+            print("請求失敗，狀態碼:", response.status_code)
+
+        # 这里添加调用API刷新令牌的逻辑
+        # 更新 self._kingnet_auth
+
+    def __init__(self, DeviceID, com_id):
         """Initialize the sensor."""
         self._state = None
         self._name = "My Package Tracker"
-        self._kingnet_auth = kingnet_auth
-        self._unique_id = unique_id  # 设置唯一ID
+        self._kingnet_auth = ""
+        self._com_id = com_id
+        self._unique_id = DeviceID  # 设置唯一ID
+        self._device_id = DeviceID
         self._attributes = {}
+        self._interval = timedelta(hours=1)  # 初始间隔时间
+        self._max_interval = timedelta(hours=12)  # 最大间隔时间
+        self._backoff_factor = 2  # 退避因子
 
     @property
     def unique_id(self):
@@ -100,9 +151,8 @@ class PackageTrackerSensor(Entity):
         """Fetch new state data for the sensor."""
         # This is where you would make your API call
         # For example:
-        url = (
-            "https://api.smartdaily.com.tw/api/Postal/getUserPostalList?com_id=20061501"
-        )
+        self.update_token()
+        url = f"https://api.smartdaily.com.tw/api/Postal/getUserPostalList?com_id={self._com_id}"
         headers = {
             "Host": "api.smartdaily.com.tw",
             "Sec-Fetch-Site": "cross-site",
@@ -149,3 +199,4 @@ class PackageTrackerSensor(Entity):
         else:
             # Handle errors
             self._state = "Error"
+            print(response.text)
