@@ -32,7 +32,7 @@ response = requests.get(url, headers=headers)
 if response.status_code == 200:
     print("Success!\nResult:\n")
     print(response.text)
-    print("\n------Beautifify------\n")
+    print("\n------Beautify------\n")
     # 解析JSON數據
     data = response.json()
 

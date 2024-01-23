@@ -1,9 +1,9 @@
 """Sensor platform for the package tracker component."""
 
 from datetime import datetime, timedelta
-
+import re
 import requests
-
+import pytz
 from homeassistant.const import CONF_API_KEY
 from homeassistant.helpers.entity import Entity
 
@@ -71,6 +71,31 @@ class PackageTrackerSensor(Entity):
         """Return other attributes of the sensor."""
         return self._attributes
 
+    def parse_time(self, time_str):
+        # 检查时间字符串是否匹配相对时间格式（如 "1小时以前"）
+        match = re.match(r"(\d+)小時以前", time_str)
+        if match:
+            hours_ago = int(match.group(1))
+            estimated_time = datetime.utcnow() - timedelta(hours=hours_ago)
+            # 转换为GMT+8时区
+            return (
+                pytz.utc.localize(estimated_time)
+                .astimezone(pytz.timezone("Asia/Taipei"))
+                .strftime("%Y/%m/%d %H:%M")
+            )
+        else:
+            # 如果是标准时间格式，假设它是UTC时间，转换为GMT+8时区
+            try:
+                utc_time = datetime.strptime(time_str, "%Y/%m/%d %H:%M")
+                return (
+                    pytz.utc.localize(utc_time)
+                    .astimezone(pytz.timezone("Asia/Taipei"))
+                    .strftime("%Y/%m/%d %H:%M")
+                )
+            except ValueError:
+                # 无法解析的时间格式
+                return None
+
     def update(self):
         """Fetch new state data for the sensor."""
         # This is where you would make your API call
@@ -97,9 +122,13 @@ class PackageTrackerSensor(Entity):
             latest_time = None
 
             for package in data["Data"]:
-                package_time = datetime.strptime(
-                    package["create_date"], "%Y/%m/%d %H:%M"
-                )
+                package_time_str = package["create_date"]
+                package_time = self.parse_time(package_time_str)
+
+                # 忽略无法解析的时间
+                if package_time is None:
+                    continue
+
                 if latest_time is None or package_time > latest_time:
                     latest_time = package_time
                     latest_package = package
@@ -108,7 +137,7 @@ class PackageTrackerSensor(Entity):
                 self._state = "已取件" if latest_package["p_status"] == 2 else "未領取"
                 self._attributes = {
                     "pd_id": latest_package["pd_id"],
-                    "create_date": latest_package["create_date"],
+                    "create_date": self.parse_time(latest_package["create_date"]),
                     "p_name": latest_package["p_name"],
                     "postal_typeText": latest_package["postal_typeText"],
                     "transport_code": latest_package["transport_code"],
