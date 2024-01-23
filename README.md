@@ -11,7 +11,7 @@
 
 ### 抓取封包以獲取所需信息
 
-為了使用這個組件，您需要從您的手機應用程序中抓取封包以獲取`KingnetAuth`信息。這可以通過以下方式完成：
+為了使用這個組件，您需要將手機的智生活APP卸載並重新安裝,在開啟之前要用封包抓取工具來抓取封包：
 
 #### iOS：
 
@@ -21,13 +21,13 @@
 
 - 使用電腦上的Fiddler工具抓取封包。
 
-您將會找到像這樣的請求：
+在重新登入，綁定社區後，您將會找到像這樣的封包：
 
 ```
-"GET https://api.smartdaily.com.tw/api/Postal/getUserPostalList?com_id=20061501"
+"POST https://api.smartdaily.com.tw/api/Valid/ValidDeviceV2"
 ```
 
-從此請求的Header中複製`KingnetAuth`的值。
+從此請求的Response中複製`DeviceSn`的值。
 
 ### 通過HACS安裝
 
@@ -40,8 +40,8 @@
 1. 重新啟動您的Home Assistant。
 2. 在Home Assistant的“配置” > “整合”頁面上，點擊“添加集成”。
 3. 搜索“智生活包裹追蹤”並選擇它。
-4. 在出現的窗口中，輸入先前從封包中抓取的`KingnetAuth`值。
-5. 點擊“提交”完成設置。
+4. 在出現的窗口中，輸入先前從封包中抓取的`DeviceSn`值。
+5. 點擊“提交”，並選擇自己的社區，完成設置。
 
 ## 使用
 
