@@ -124,28 +124,45 @@ class PackageTrackerSensor(Entity):
 
     def parse_time(self, time_str):
         # 检查时间字符串是否匹配相对时间格式（如 "1小时以前"）
-        match = re.match(r"(\d+)小時以前", time_str)
-        if match:
-            hours_ago = int(match.group(1))
-            # 获取当前时间
-            now = datetime.now(pytz.timezone("Asia/Taipei"))
-            # 回退到最近的整点
-            now_at_hour = now.replace(minute=0, second=0, microsecond=0)
-            # 减去相对时间
-            estimated_time = now_at_hour - timedelta(hours=hours_ago)
-            return estimated_time.strftime("%Y/%m/%d %H:%M")
-        else:
-            # 如果是标准时间格式，假设它是UTC时间，转换为GMT+8时区
+        if "昨天" in time_str:
+            time_part = time_str.split(" ")[1]  # noqa: E999
             try:
-                utc_time = datetime.strptime(time_str, "%Y/%m/%d %H:%M")
-                return (
-                    pytz.utc.localize(utc_time)
-                    .astimezone(pytz.timezone("Asia/Taipei"))
-                    .strftime("%Y/%m/%d %H:%M")
+                yesterday_time = datetime.strptime(time_part, "%H:%M")
+                # 获取昨天的日期
+                yesterday = datetime.now(pytz.timezone("Asia/Taipei")) - timedelta(
+                    days=1
                 )
+                # 组合日期和时间
+                combined_datetime = yesterday.replace(
+                    hour=yesterday_time.hour, minute=yesterday_time.minute
+                )
+                return combined_datetime.strftime("%Y/%m/%d %H:%M")
             except ValueError:
                 # 无法解析的时间格式
                 return None
+        else:
+            match = re.match(r"(\d+)小時以前", time_str)
+            if match:
+                hours_ago = int(match.group(1))
+                # 获取当前时间
+                now = datetime.now(pytz.timezone("Asia/Taipei"))
+                # 回退到最近的整点
+                now_at_hour = now.replace(minute=0, second=0, microsecond=0)
+                # 减去相对时间
+                estimated_time = now_at_hour - timedelta(hours=hours_ago)
+                return estimated_time.strftime("%Y/%m/%d %H:%M")
+            else:
+                # 如果是标准时间格式，假设它是UTC时间，转换为GMT+8时区
+                try:
+                    utc_time = datetime.strptime(time_str, "%Y/%m/%d %H:%M")
+                    return (
+                        pytz.utc.localize(utc_time)
+                        .astimezone(pytz.timezone("Asia/Taipei"))
+                        .strftime("%Y/%m/%d %H:%M")
+                    )
+                except ValueError:
+                    # 无法解析的时间格式
+                    return None
 
     def update(self):
         """Fetch new state data for the sensor."""
