@@ -1,0 +1,28 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "連接智生活API",
+                "description": "請先照Github說明，透過抓包工具抓取設備ID後，填入框內",
+                "data": {
+                    "DeviceID": "設備ID"
+                }
+            },
+            "select_community": {
+                "title": "選擇社區",
+                "description": "請選擇欲追蹤之社區",
+                "data": {
+                      "com_id": "社區"
+                  }
+            }
+        },
+        "error": {
+            "cannot_connect": "无法连接到设备，请检查您的信息后重试。",
+            "invalid_auth": "提供的认证信息无效。",
+            "unknown": "发生未知错误。"
+        },
+        "abort": {
+            "already_configured": "设备已经被配置。"
+        }
+    }
+}
