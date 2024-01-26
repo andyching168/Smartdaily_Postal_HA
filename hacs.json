@@ -1,0 +1,8 @@
+{
+    "name": "智生活包裹追蹤",
+    "homeassistant": "2024.1.0",
+    "render_readme": true,
+    "domain": "smartdaily_postal_ha",
+    "documentation": "https://github.com/andyching168/Smartdaily_Postal_HA",
+    "issue_tracker": "https://github.com/andyching168/Smartdaily_Postal_HA/issues"
+  }

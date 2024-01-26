@@ -4,12 +4,12 @@ from homeassistant.core import callback
 import requests
 import aiohttp
 
-DOMAIN = "my_parcel_tracker"
+DOMAIN = "smartdaily_postal_ha"
 KingnetAuthValue = ""
 
 
 class MyParcelTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """MyParcelTracker config flow."""
+    """smartdaily_postal_ha config flow."""
 
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""

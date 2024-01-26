@@ -12,7 +12,7 @@ from homeassistant.const import CONF_API_KEY
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 
-DOMAIN = "my_parcel_tracker"
+DOMAIN = "smartdaily_postal_ha"
 SCAN_INTERVAL = timedelta(minutes=5)
 MIN_TIME_BETWEEN_UPDATES = timedelta(hours=12)
 
