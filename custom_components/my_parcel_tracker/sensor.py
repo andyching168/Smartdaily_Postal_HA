@@ -124,7 +124,14 @@ class PackageTrackerSensor(Entity):
 
     def parse_time(self, time_str):
         # 检查时间字符串是否匹配相对时间格式（如 "1小时以前"）
-        if "昨天" in time_str:
+        print(time_str)
+        if "剛剛" in time_str:
+            # 获取当前时间并回退到最近的整点
+            now = datetime.now(pytz.timezone("Asia/Taipei"))
+            now_at_hour = now.replace(minute=0, second=0, microsecond=0)
+            print(now_at_hour.strftime("%Y/%m/%d %H:%M"))
+            return now_at_hour.strftime("%Y/%m/%d %H:%M")
+        elif "昨天" in time_str:
             time_part = time_str.split(" ")[1]  # noqa: E999
             try:
                 yesterday_time = datetime.strptime(time_part, "%H:%M")
@@ -152,17 +159,26 @@ class PackageTrackerSensor(Entity):
                 estimated_time = now_at_hour - timedelta(hours=hours_ago)
                 return estimated_time.strftime("%Y/%m/%d %H:%M")
             else:
-                # 如果是标准时间格式，假设它是UTC时间，转换为GMT+8时区
-                try:
-                    utc_time = datetime.strptime(time_str, "%Y/%m/%d %H:%M")
-                    return (
-                        pytz.utc.localize(utc_time)
-                        .astimezone(pytz.timezone("Asia/Taipei"))
-                        .strftime("%Y/%m/%d %H:%M")
-                    )
-                except ValueError:
-                    # 无法解析的时间格式
-                    return None
+                match = re.match(r"(\d+)分鐘以前", time_str)
+                if match:
+                    minutes_ago = int(match.group(1))
+                    # 获取当前时间
+                    now = datetime.now(pytz.timezone("Asia/Taipei"))
+                    # 减去相对时间
+                    estimated_time = now - timedelta(minutes=minutes_ago)
+                    return estimated_time.strftime("%Y/%m/%d %H:%M")
+                else:
+                    # 如果是标准时间格式，假设它是UTC时间，转换为GMT+8时区
+                    try:
+                        utc_time = datetime.strptime(time_str, "%Y/%m/%d %H:%M")
+                        return (
+                            pytz.utc.localize(utc_time)
+                            .astimezone(pytz.timezone("Asia/Taipei"))
+                            .strftime("%Y/%m/%d %H:%M")
+                        )
+                    except ValueError:
+                        # 无法解析的时间格式
+                        return None
 
     def update(self):
         """Fetch new state data for the sensor."""
@@ -194,6 +210,7 @@ class PackageTrackerSensor(Entity):
 
                 # 忽略无法解析的时间
                 if package_time is None:
+                    print("無法解析")
                     continue
 
                 if latest_time is None or package_time > latest_time:
