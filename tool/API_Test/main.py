@@ -117,6 +117,7 @@ if response.status_code == 200:
         print(f'內容: {package["postal_typeText"]}')
         print(f'物流: {package["postal_logisticsText"]}')
         print(f'條碼: {package["transport_code"]}')
+        print(f'物流業者: {package["postal_logisticsText"]}')
         print(f'存放位置: {package["p_note"]}\n-----------\n')
 else:
     print("請求失敗，狀態碼:", response.status_code)
