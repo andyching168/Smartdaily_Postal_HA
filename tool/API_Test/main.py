@@ -111,13 +111,16 @@ if response.status_code == 200:
     for package in data["Data"]:
         # 處理包裹狀態
         status_text = "未領取" if package["p_status"] == 1 else "已取件"
+        # 使用 .get 方法處理可能缺失的 postal_logisticsText，如果缺失則顯示 "Unavailable"
+        logistics_text = package.get("postal_logisticsText", "Unavailable")
 
         print(f'#{package["serial_num"]} {package["create_date"]} {status_text}')
         print(f'姓名: {package["p_name"]}')
         print(f'內容: {package["postal_typeText"]}')
-        print(f'物流: {package["postal_logisticsText"]}')
+        print(f'物流: {logistics_text}')
         print(f'條碼: {package["transport_code"]}')
-        print(f'物流業者: {package["postal_logisticsText"]}')
+        print(f'物流業者: {logistics_text}')  # 假設這裡應該打印相同的物流信息
         print(f'存放位置: {package["p_note"]}\n-----------\n')
 else:
     print("請求失敗，狀態碼:", response.status_code)
+

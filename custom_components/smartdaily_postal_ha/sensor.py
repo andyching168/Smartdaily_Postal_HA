@@ -229,7 +229,9 @@ class PackageTrackerSensor(Entity):
                     if latest_package["privacy"] == "privacy"
                     else False,
                     "p_note": latest_package["p_note"],
-                    "postal_logisticsText": latest_package["postal_logisticsText"],
+                    "postal_logisticsText": latest_package.get(
+                        "postal_logisticsText", "Unavailable"
+                    ),  # 如果沒有 'postal_logisticsText'，則返回空字符串
                 }
         else:
             # Handle errors
