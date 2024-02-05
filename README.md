@@ -1,6 +1,6 @@
 # Smartdaily_Postal_HA
-
-將今網智生活的包裹領取狀態串接到Home Assistant的工具
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)]([https://www.buymeacoffee.com/gbraad](https://www.buymeacoffee.com/andyching168))
+### 將今網智生活的包裹領取狀態串接到Home Assistant的工具
 
 ## 安裝
 
