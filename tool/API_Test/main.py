@@ -120,7 +120,9 @@ if response.status_code == 200:
         print(f'物流: {logistics_text}')
         print(f'條碼: {package["transport_code"]}')
         print(f'物流業者: {logistics_text}')  # 假設這裡應該打印相同的物流信息
+        print(f'包裹照片(如果可用): {package["postal_img"]}')
         print(f'存放位置: {package["p_note"]}\n-----------\n')
+        
 else:
     print("請求失敗，狀態碼:", response.status_code)
 

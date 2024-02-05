@@ -32,7 +32,9 @@ class PackageTrackerSensor(Entity):
     def added_to_hass(self):
         """When entity is added to hass."""
         # 每隔一段时间自动刷新令牌
+        
         self.update_token()
+        
 
     def update_token(self):
         """Update the KingnetAuth token."""
@@ -74,13 +76,13 @@ class PackageTrackerSensor(Entity):
         self._name = "My Package Tracker"
         self._kingnet_auth = ""
         self._com_id = com_id
-        self._unique_id = DeviceID  # 设置唯一ID
         self._device_id = DeviceID
+        self._unique_id = f"{DeviceID}_{com_id}"
         self._attributes = {}
         self._interval = timedelta(hours=1)  # 初始间隔时间
         self._max_interval = timedelta(hours=12)  # 最大间隔时间
         self._backoff_factor = 2  # 退避因子
-
+        
     @property
     def unique_id(self):
         """Return a unique ID."""
@@ -184,6 +186,8 @@ class PackageTrackerSensor(Entity):
         """Fetch new state data for the sensor."""
         # This is where you would make your API call
         # For example:
+        if DOMAIN not in self.hass.data:
+                self.hass.data[DOMAIN] = {}
         self.update_token()
         url = f"https://api.smartdaily.com.tw/api/Postal/getUserPostalList?com_id={self._com_id}"
         headers = {
@@ -219,20 +223,30 @@ class PackageTrackerSensor(Entity):
 
             if latest_package:
                 self._state = "已取件" if latest_package["p_status"] == 2 else "未領取"
+
+                # 检查 'postal_img' 是否存在，如果为空字符串则标记为 "Unavailable"
+                postal_img_url = latest_package.get("postal_img", "Unavailable")
+                if not postal_img_url:
+                    postal_img_url = "Unavailable"
+
                 self._attributes = {
                     "pd_id": latest_package["pd_id"],
                     "create_date": self.parse_time(latest_package["create_date"]),
                     "p_name": latest_package["p_name"],
                     "postal_typeText": latest_package["postal_typeText"],
                     "transport_code": latest_package["transport_code"],
-                    "privacy": True
-                    if latest_package["privacy"] == "privacy"
-                    else False,
+                    "privacy": latest_package.get("privacy") == "privacy",
                     "p_note": latest_package["p_note"],
-                    "postal_logisticsText": latest_package.get(
-                        "postal_logisticsText", "Unavailable"
-                    ),  # 如果沒有 'postal_logisticsText'，則返回空字符串
+                    "postal_logisticsText": latest_package.get("postal_logisticsText", "Unavailable"),
+                    "postal_img": postal_img_url  # 直接使用变量
                 }
+
+                # 根据 'postal_img' 属性决定存储在全局变量中的URL
+                if self._attributes["postal_img"] == "Unavailable":
+                    self.hass.data[DOMAIN]["parcel_image_url"] = "https://img.smartdaily.com.tw/wordpress/smartdaily/homepage/LOGO.png"
+                else:
+                    self.hass.data[DOMAIN]["parcel_image_url"] = self._attributes["postal_img"]
+
         else:
             # Handle errors
             self._state = "Error"
