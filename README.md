@@ -1,5 +1,5 @@
 # Smartdaily_Postal_HA
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)]([https://www.buymeacoffee.com/gbraad](https://www.buymeacoffee.com/andyching168))
+<a href="https://www.buymeacoffee.com/andyching168" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 ### 將今網智生活的包裹領取狀態串接到Home Assistant的工具
 
 ## 安裝
