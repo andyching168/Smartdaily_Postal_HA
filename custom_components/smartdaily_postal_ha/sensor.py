@@ -207,11 +207,12 @@ class PackageTrackerSensor(Entity):
             data = response.json()
             latest_package = None
             latest_time = None
-
+            unclaimed_packages_count = 0
             for package in data["Data"]:
                 package_time_str = package["create_date"]
                 package_time = self.parse_time(package_time_str)
-
+                if package["p_status"] == 1:  # 假设状态1表示未领取
+                    unclaimed_packages_count += 1  # 未领取包裹计数器加一
                 # 忽略无法解析的时间
                 if package_time is None:
                     print("無法解析")
@@ -238,7 +239,8 @@ class PackageTrackerSensor(Entity):
                     "privacy": latest_package.get("privacy") == "privacy",
                     "p_note": latest_package["p_note"],
                     "postal_logisticsText": latest_package.get("postal_logisticsText", "Unavailable"),
-                    "postal_img": postal_img_url  # 直接使用变量
+                    "postal_img": postal_img_url,  # 直接使用变量
+                    "unclaimed_packages_count": unclaimed_packages_count
                 }
 
                 # 根据 'postal_img' 属性决定存储在全局变量中的URL
