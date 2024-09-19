@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import requests
 import json
 DeviceID=input("請輸入您的裝置ID:")
@@ -6,43 +8,30 @@ url = "https://api.smartdaily.com.tw/api/Valid/getHashCodeV2?code="+DeviceID
 
 
 headers = {
-    "Host": "api.smartdaily.com.tw",
-    "Sec-Fetch-Site": "cross-site",
     "Connection": "keep-alive",
-    "Sec-Fetch-Mode": "cors",
-    "Accept": "application/json, text/plain, */*",
-    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-    "Accept-Language": "zh-TW,zh-Hant;q=0.9",
-    "Sec-Fetch-Dest": "empty",
-    "Accept-Encoding": "gzip, deflate, br"
+    "Accept": "application/json, text/plain, */*"
 }
 KingnetAuthValue=""
 response = requests.get(url, headers=headers)
+response.encoding = 'utf-8'
 if response.status_code == 200:
     print("Success!\nResult:\n")
-    print(response.text)
-    print("\n------Beautify------\n")
-    # 解析JSON數據
-    data = response.json()
-
-    KingnetAuthValue="CommunityUser "+data["Data"]["token"]
-    print(KingnetAuthValue)
+    print(response.text)  # 查看回應的實際內容
+    try:
+        data = response.json()  # 嘗試解析 JSON
+        KingnetAuthValue = "CommunityUser " + data["Data"]["token"]
+        print(KingnetAuthValue)
+    except json.JSONDecodeError:
+        print("無法解析 JSON，請檢查回應格式")
 else:
     print("請求失敗，狀態碼:", response.status_code)
     exit()
 
 # 自定義headers
 headers = {
-    "Host": "api.smartdaily.com.tw",
-    "Sec-Fetch-Site": "cross-site",
     "Connection": "keep-alive",
     "KingnetAuth": KingnetAuthValue,
-    "Sec-Fetch-Mode": "cors",
-    "Accept": "application/json, text/plain, */*",
-    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-    "Accept-Language": "zh-TW,zh-Hant;q=0.9",
-    "Sec-Fetch-Dest": "empty",
-    "Accept-Encoding": "gzip, deflate, br"
+    "Accept": "application/json, text/plain, */*"
 }
 url = "https://api.smartdaily.com.tw/api/Community/GetUserCommunityList"
 response = requests.get(url, headers=headers)
@@ -77,16 +66,9 @@ url = "https://api.smartdaily.com.tw/api/Postal/getUserPostalList?com_id="+Com_I
 
 # 自定義headers
 headers = {
-    "Host": "api.smartdaily.com.tw",
-    "Sec-Fetch-Site": "cross-site",
     "Connection": "keep-alive",
     "KingnetAuth": KingnetAuthValue,
-    "Sec-Fetch-Mode": "cors",
-    "Accept": "application/json, text/plain, */*",
-    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-    "Accept-Language": "zh-TW,zh-Hant;q=0.9",
-    "Sec-Fetch-Dest": "empty",
-    "Accept-Encoding": "gzip, deflate, br"
+    "Accept": "application/json, text/plain, */*"
 }
 
 
