@@ -3,7 +3,7 @@
         "step": {
             "user": {
                 "title": "連接智生活API",
-                "description": "請先照Github說明，透過抓包工具抓取設備ID後，填入框內",
+                "description": "請先照Github說明(https://github.com/andyching168/Smartdaily_Postal_HA)，透過條碼辨識，複製設備ID後，填入框內",
                 "data": {
                     "DeviceID": "設備ID"
                 }
@@ -17,12 +17,12 @@
             }
         },
         "error": {
-            "cannot_connect": "无法连接到设备，请检查您的信息后重试。",
-            "invalid_auth": "提供的认证信息无效。",
-            "unknown": "发生未知错误。"
+            "cannot_connect": "無法連接到設備，請檢查您的資訊後重試。",
+            "invalid_auth": "提供驗證資訊無效。",
+            "unknown": "發生未知錯誤。"
         },
         "abort": {
-            "already_configured": "设备已经被配置。"
+            "already_configured": "設備已經被配置。"
         }
     }
 }
