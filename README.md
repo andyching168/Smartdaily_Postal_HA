@@ -9,25 +9,14 @@
 - Home Assistant安裝。
 - HACS (Home Assistant Community Store) 安裝。
 
-### 抓取封包以獲取所需信息
+### 取得DeviceSn (也就是裝置識別)
 
-為了使用這個組件，您需要將手機的智生活APP卸載並重新安裝,在開啟之前要用封包抓取工具來抓取封包：
-
-#### iOS：
-
-- 使用iOS上的Stream應用程序抓取封包。
-
-#### Android：
-
-- 使用電腦上的Fiddler工具抓取封包。
-
-在重新登入，綁定社區後，您將會找到像這樣的封包：
-
-```
-"POST https://api.smartdaily.com.tw/api/Valid/ValidDeviceV2"
-```
-
-從此請求的Response中複製`DeviceSn(或DeviceCode)`的值。
+為了使用這個組件，你需要取得DeviceSn。
+別擔心，這非常好取得，可依照以下步驟
+1. 在智生活APP首頁，點擊右上角的「條碼」（也就是領取包裹時給管理員掃描的頁面）：
+2. 將此頁面截圖
+3. 到[條碼掃瞄網站](https://online-barcode-reader.inliteresearch.com/)，將截圖上傳到網站辨識。
+4. 複製辨識出來的字串（也就是`DeviceSn(或DeviceCode)`的值）。
 
 ### 通過HACS安裝
 
@@ -40,7 +29,7 @@
 1. 重新啟動您的Home Assistant。
 2. 在Home Assistant的“配置” > “整合”頁面上，點擊“添加集成”。
 3. 搜索“智生活包裹追蹤”並選擇它。
-4. 在出現的窗口中，輸入先前從封包中抓取的`DeviceSn(或DeviceCode)`值。
+4. 在出現的窗口中，輸入先前辨識出來的`DeviceSn(或DeviceCode)`值。
 5. 點擊“提交”，並選擇自己的社區，完成設置。
 
 ## 使用
