@@ -39,15 +39,8 @@ class PackageTrackerSensor(Entity):
     def update_token(self):
         """Update the KingnetAuth token."""
         headers_update_token = {
-            "Host": "api.smartdaily.com.tw",
-            "Sec-Fetch-Site": "cross-site",
             "Connection": "keep-alive",
-            "Sec-Fetch-Mode": "cors",
-            "Accept": "application/json, text/plain, */*",
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-            "Accept-Language": "zh-TW,zh-Hant;q=0.9",
-            "Sec-Fetch-Dest": "empty",
-            "Accept-Encoding": "gzip, deflate, br",
+            "Accept": "application/json, text/plain, */*"
         }
         response = requests.get(
             "https://api.smartdaily.com.tw/api/Valid/getHashCodeV2?code="
@@ -190,17 +183,11 @@ class PackageTrackerSensor(Entity):
                 self.hass.data[DOMAIN] = {}
         self.update_token()
         url = f"https://api.smartdaily.com.tw/api/Postal/getUserPostalList?com_id={self._com_id}"
+        
         headers = {
-            "Host": "api.smartdaily.com.tw",
-            "Sec-Fetch-Site": "cross-site",
             "Connection": "keep-alive",
             "KingnetAuth": self._kingnet_auth,
-            "Sec-Fetch-Mode": "cors",
-            "Accept": "application/json, text/plain, */*",
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-            "Accept-Language": "zh-TW,zh-Hant;q=0.9",
-            "Sec-Fetch-Dest": "empty",
-            "Accept-Encoding": "gzip, deflate, br",
+            "Accept": "application/json, text/plain, */*"
         }
         response = requests.get(url, headers=headers)
         if response.status_code == 200:

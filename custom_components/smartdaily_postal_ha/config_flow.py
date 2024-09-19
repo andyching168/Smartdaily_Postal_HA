@@ -21,15 +21,8 @@ class MyParcelTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 + self.device_id
             )
             headers = {
-                "Host": "api.smartdaily.com.tw",
-                "Sec-Fetch-Site": "cross-site",
                 "Connection": "keep-alive",
-                "Sec-Fetch-Mode": "cors",
-                "Accept": "application/json, text/plain, */*",
-                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-                "Accept-Language": "zh-TW,zh-Hant;q=0.9",
-                "Sec-Fetch-Dest": "empty",
-                "Accept-Encoding": "gzip, deflate, br",
+                "Accept": "application/json, text/plain, */*"
             }
             response = await self.hass.async_add_executor_job(
                 requests.get, url, headers
@@ -89,16 +82,9 @@ class MyParcelTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def _get_communities(self, KingnetAuthValue):
         """获取社区列表。"""
         headers = {
-            "Host": "api.smartdaily.com.tw",
-            "Sec-Fetch-Site": "cross-site",
             "Connection": "keep-alive",
             "KingnetAuth": self.KingnetAuthValue,
-            "Sec-Fetch-Mode": "cors",
-            "Accept": "application/json, text/plain, */*",
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-            "Accept-Language": "zh-TW,zh-Hant;q=0.9",
-            "Sec-Fetch-Dest": "empty",
-            "Accept-Encoding": "gzip, deflate, br",
+            "Accept": "application/json, text/plain, */*"
         }
         communities = []  # 初始化空列表用于存储社区信息
         async with aiohttp.ClientSession() as session:
