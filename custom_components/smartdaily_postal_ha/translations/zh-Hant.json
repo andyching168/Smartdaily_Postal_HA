@@ -3,7 +3,7 @@
         "step": {
             "user": {
                 "title": "連接智生活API",
-                "description": "請先照Github說明(https://github.com/andyching168/Smartdaily_Postal_HA)，透過條碼辨識，複製設備ID後，填入框內",
+                "description": "請先照Github說明( https://github.com/andyching168/Smartdaily_Postal_HA )，透過條碼辨識，複製設備ID後，填入框內",
                 "data": {
                     "DeviceID": "設備ID"
                 }
