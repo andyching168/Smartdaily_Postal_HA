@@ -1,5 +1,7 @@
-# Smartdaily_Postal_HA
-<a href="https://www.buymeacoffee.com/andyching168" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+# Smartdaily\_Postal\_HA
+
+
+
 ### 將今網智生活的包裹領取狀態串接到Home Assistant的工具
 
 ## 安裝
@@ -13,6 +15,7 @@
 
 為了使用這個組件，你需要取得DeviceSn。
 別擔心，這非常好取得，可依照以下步驟
+
 1. 在智生活APP首頁，點擊右上角的「條碼」（也就是領取包裹時給管理員掃描的頁面）
 2. 將此頁面截圖
 3. 到[條碼掃瞄網站](https://online-barcode-reader.inliteresearch.com/)，將截圖上傳到網站辨識。
@@ -35,3 +38,44 @@
 ## 使用
 
 一旦完成安裝和配置，您將可以在Home Assistant中看到一個新的感應器，顯示您的包裹追蹤信息。
+
+### 額外配置查看寄放物品詳情
+
+如果您想查看寄放物的詳細信息，請按照以下步驟進行設置：
+
+1. 下載在collection資料夾內的`collection_fetch.py`，編輯 `collection_fetch.py` 文件中的 `DeviceID` ，將其設置為您的裝置ID。
+
+2. 將編輯好的 Python 腳本 (`collection_fetch.py`) 上傳到 Home Assistant 的配置資料夾（通常是 `/config` 或 `/homeassistant`）。
+
+3. 在 Home Assistant 的 `configuration.yaml` 文件中添加以下 Command Line Sensor 設置：
+
+   ```yaml
+   command_line:
+     - sensor:
+         name: "寄放物狀態"
+         command: "python /config/collection_fetch.py"
+         value_template: "{{ value_json.status }}"
+         json_attributes:
+           - serial_num
+           - date
+           - from_name
+           - to_name
+           - from_tablet
+           - to_tablet
+           - c_dtype
+           - c_money
+           - sdate
+           - ddate
+           - collection_image
+           - uncollected_count
+         scan_interval: 300
+   ```
+
+4. 為了顯示寄放物的圖片，您可以在 Home Assistant 中配置一個 Template Image，例如：
+
+   ```yaml
+   {{ state_attr("sensor.ji_fang_wu_zhuang_tai", "collection_image") }}
+   ```
+
+這樣，您就可以在 Home Assistant 中查看最新的寄放物狀態以及相關的圖片等信息。
+

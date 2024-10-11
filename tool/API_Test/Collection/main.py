@@ -106,4 +106,3 @@ if response.status_code == 200:
         
 else:
     print("請求失敗，狀態碼:", response.status_code)
-
