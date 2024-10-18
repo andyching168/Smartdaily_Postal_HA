@@ -73,7 +73,7 @@
       - sensor:
             name: "已領取寄放物狀態"
             command: "python /config/collection_fetch.py"
-            value_template: "{{ value_json.collected.status }}"
+            value_template: "{{ value_json.collected.ddate }}"
             json_attributes_path: "$.collected"
             json_attributes:
                - serial_num
