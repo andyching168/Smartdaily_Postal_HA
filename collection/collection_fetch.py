@@ -43,13 +43,17 @@ response = requests.get(url, headers=headers)
 if response.status_code == 200:
     data = response.json()  # 解析JSON數據
     if "Data" in data and len(data["Data"]) > 0:
-        # 優先抓取最新一筆未領取的寄放物，如果沒有則抓取最新一筆記錄
+        # 未領取物品清單
         uncollected_items = [item for item in data["Data"] if item["is_end"] == 'no']
+        # 已領取物品清單
+        collected_items = [item for item in data["Data"] if item["is_end"] == 'yes']
+
+        # 1. 優先抓取最新一筆未領取的寄放物，若沒有則抓取最新一筆記錄
         if uncollected_items:
             latest_collection = max(uncollected_items, key=lambda x: x["date"])
         else:
             latest_collection = max(data["Data"], key=lambda x: x["date"])
-        
+
         status_text = "未領取" if latest_collection["is_end"] == 'no' else "已領取"
         collection_image = latest_collection["CollectionImage"] if latest_collection["CollectionImage"] else "https://img.smartdaily.com.tw/wordpress/smartdaily/homepage/LOGO.png"
         latest_info = {
@@ -71,8 +75,34 @@ if response.status_code == 200:
         uncollected_count = len(uncollected_items)
         latest_info["uncollected_count"] = uncollected_count
 
-        # 用 JSON 輸出
-        print(json.dumps(latest_info, ensure_ascii=False, indent=4))
+        # 2. 抓取最新一筆已領取的寄放物
+        if collected_items:
+            latest_collected = max(collected_items, key=lambda x: x["date"])
+            collected_status_text = "已領取"
+            collected_collection_image = latest_collected["CollectionImage"] if latest_collected["CollectionImage"] else "https://img.smartdaily.com.tw/wordpress/smartdaily/homepage/LOGO.png"
+            collected_info = {
+                "serial_num": latest_collected["serial_num"],
+                "date": latest_collected["date"],
+                "status": collected_status_text,
+                "from_name": latest_collected["from_name"],
+                "to_name": latest_collected["to_name"],
+                "from_tablet": latest_collected.get("from_tablet", "Unavailable"),
+                "to_tablet": latest_collected["to_tablet"],
+                "c_dtype": latest_collected["c_dtype"],
+                "c_money": latest_collected["c_money"],
+                "sdate": latest_collected["sdate"],
+                "ddate": latest_collected["ddate"],
+                "collection_image": collected_collection_image
+            }
+        else:
+            collected_info = {}
+
+        # 用 JSON 輸出，分兩個區域：latest 和 collected
+        output = {
+            "latest": latest_info,
+            "collected": collected_info
+        }
+        print(json.dumps(output, ensure_ascii=False, indent=4))
     else:
         print("沒有可用的記錄")
 else:
