@@ -52,33 +52,41 @@
    ```yaml
    command_line:
       - sensor:
-            name: "寄放物狀態"
+            name: "最新寄放物狀態"
             command: "python /config/collection_fetch.py"
             value_template: "{{ value_json.latest.status }}"
+            json_attributes_path: "$.latest"
             json_attributes:
-            - latest_serial_num
-            - latest_date
-            - latest_from_name
-            - latest_to_name
-            - latest_from_tablet
-            - latest_to_tablet
-            - latest_c_dtype
-            - latest_c_money
-            - latest_sdate
-            - latest_ddate
-            - latest_collection_image
-            - uncollected_count
-            - collected_serial_num
-            - collected_date
-            - collected_from_name
-            - collected_to_name
-            - collected_from_tablet
-            - collected_to_tablet
-            - collected_c_dtype
-            - collected_c_money
-            - collected_sdate
-            - collected_ddate
-            - collected_collection_image
+               - serial_num
+               - date
+               - from_name
+               - to_name
+               - from_tablet
+               - to_tablet
+               - c_dtype
+               - c_money
+               - sdate
+               - ddate
+               - collection_image
+               - uncollected_count
+            scan_interval: 300
+      - sensor:
+            name: "已領取寄放物狀態"
+            command: "python /config/collection_fetch.py"
+            value_template: "{{ value_json.collected.status }}"
+            json_attributes_path: "$.collected"
+            json_attributes:
+               - serial_num
+               - date
+               - from_name
+               - to_name
+               - from_tablet
+               - to_tablet
+               - c_dtype
+               - c_money
+               - sdate
+               - ddate
+               - collection_image
             scan_interval: 300
 
    ```
@@ -86,10 +94,10 @@
 4. 為了顯示寄放物的圖片，您可以在 Home Assistant 中配置兩個 Template Image：
 
    ```yaml
-   {{ state_attr("sensor.ji_fang_wu_zhuang_tai", "latest_collection_image") }}
+   {{ state_attr("sensor.zui_xin_ji_fang_wu_zhuang_tai", "collection_image") }}
    ```
    ```yaml
-   {{ state_attr("sensor.ji_fang_wu_zhuang_tai", "collected_collection_imagee") }}
+   {{ state_attr("sensor.yi_ling_qu_ji_fang_wu_zhuang_tai", "collection_image") }}
    ```
 這樣，您就可以在 Home Assistant 中查看最新的寄放物狀態、最後領取的寄放物狀態以及相關的圖片等信息。
 
