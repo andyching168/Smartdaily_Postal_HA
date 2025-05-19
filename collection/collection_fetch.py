@@ -55,7 +55,7 @@ if response.status_code == 200:
             latest_collection = max(data["Data"], key=lambda x: x["date"])
 
         status_text = "未領取" if latest_collection["is_end"] == 'no' else "已領取"
-        collection_image = latest_collection["CollectionImage"] if latest_collection["CollectionImage"] else "https://img.smartdaily.com.tw/wordpress/smartdaily/homepage/LOGO.png"
+        collection_image = latest_collection["CollectionImage"].split("?")[0] if latest_collection["CollectionImage"] else "https://img.smartdaily.com.tw/wordpress/smartdaily/homepage/LOGO.png"
         latest_info = {
             "serial_num": latest_collection["serial_num"],
             "date": latest_collection["date"],
@@ -79,7 +79,7 @@ if response.status_code == 200:
         if collected_items:
             latest_collected = max(collected_items, key=lambda x: x["date"])
             collected_status_text = "已領取"
-            collected_collection_image = latest_collected["CollectionImage"] if latest_collected["CollectionImage"] else "https://img.smartdaily.com.tw/wordpress/smartdaily/homepage/LOGO.png"
+            collected_collection_image = latest_collected["CollectionImage"].split("?")[0] if latest_collected["CollectionImage"] else "https://img.smartdaily.com.tw/wordpress/smartdaily/homepage/LOGO.png"
             collected_info = {
                 "serial_num": latest_collected["serial_num"],
                 "date": latest_collected["date"],

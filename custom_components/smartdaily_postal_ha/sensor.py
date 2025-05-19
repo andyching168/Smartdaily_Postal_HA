@@ -213,10 +213,13 @@ class PackageTrackerSensor(Entity):
                 self._state = "已取件" if latest_package["p_status"] == 2 else "未領取"
 
                 # 检查 'postal_img' 是否存在，如果为空字符串则标记为 "Unavailable"
-                postal_img_url = latest_package.get("postal_img", "Unavailable")
-                if not postal_img_url:
+                postal_img_url = latest_package.get("postal_img", "")
+                if postal_img_url:
+                    # 只保留第一個問號前的部分
+                    postal_img_url = postal_img_url.split("?")[0]
+                else:
                     postal_img_url = "Unavailable"
-
+                    
                 self._attributes = {
                     "pd_id": latest_package["pd_id"],
                     "create_date": self.parse_time(latest_package["create_date"]),
