@@ -1,3 +1,35 @@
 # Environments
 .venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# VSCode
+.vscode/
+
+# Test outputs
+.coverage
+htmlcov/
+*.log
+
+# macOS
 .DS_Store
+
+# Home Assistant
+home-assistant.log
+home-assistant_v2.db
+
+# Test folders
+/tests/__pycache__/
+
+# Custom Components cache
+custom_components/*/__pycache__/
+
+# Ignore tool virtualenvs
+/tool/API_Test/bin/
+/tool/API_Test/include/
+/tool/API_Test/lib/
+/tool/API_Test/pyvenv.cfg
