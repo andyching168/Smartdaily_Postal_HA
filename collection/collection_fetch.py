@@ -99,13 +99,80 @@ if response.status_code == 200:
         else:
             collected_info = {}
 
-        # 用 JSON 輸出，分兩個區域：latest 和 collected
+        # 3. 建立 slot_1 ~ slot_4 的未領取寄放物資訊
+        # 按日期排序（最新的在前）
+        uncollected_items.sort(key=lambda x: x["date"], reverse=True)
+        
+        slots = {}
+        for i in range(1, 5):  # slot_1 ~ slot_4
+            slot_key = f"slot_{i}"
+            if i <= len(uncollected_items):
+                item = uncollected_items[i - 1]
+                item_image = item["CollectionImage"] if item["CollectionImage"] else "https://img.smartdaily.com.tw/wordpress/smartdaily/homepage/LOGO.png"
+                slots[slot_key] = {
+                    "has_item": True,
+                    "serial_num": item["serial_num"],
+                    "date": item["date"],
+                    "status": "未領取",
+                    "from_name": item["from_name"],
+                    "to_name": item["to_name"],
+                    "from_tablet": item.get("from_tablet", "Unavailable"),
+                    "to_tablet": item["to_tablet"],
+                    "c_dtype": item["c_dtype"],
+                    "c_money": item["c_money"],
+                    "sdate": item["sdate"],
+                    "ddate": item["ddate"],
+                    "collection_image": item_image
+                }
+            else:
+                slots[slot_key] = {
+                    "has_item": False,
+                    "serial_num": "",
+                    "date": "",
+                    "status": "無寄放物",
+                    "from_name": "",
+                    "to_name": "",
+                    "from_tablet": "",
+                    "to_tablet": "",
+                    "c_dtype": "",
+                    "c_money": "",
+                    "sdate": "",
+                    "ddate": "",
+                    "collection_image": ""
+                }
+
+        # 用 JSON 輸出，分多個區域：latest, collected, slot_1 ~ slot_4
         output = {
             "latest": latest_info,
-            "collected": collected_info
+            "collected": collected_info,
+            **slots
         }
-        print(json.dumps(output, ensure_ascii=False, indent=4))
+        print(json.dumps(output, ensure_ascii=False))
     else:
-        print("沒有可用的記錄")
+        # 沒有任何記錄時，輸出空的結構
+        empty_slot = {
+            "has_item": False,
+            "serial_num": "",
+            "date": "",
+            "status": "無寄放物",
+            "from_name": "",
+            "to_name": "",
+            "from_tablet": "",
+            "to_tablet": "",
+            "c_dtype": "",
+            "c_money": "",
+            "sdate": "",
+            "ddate": "",
+            "collection_image": ""
+        }
+        output = {
+            "latest": {"status": "無資料", "uncollected_count": 0},
+            "collected": {},
+            "slot_1": empty_slot,
+            "slot_2": empty_slot,
+            "slot_3": empty_slot,
+            "slot_4": empty_slot
+        }
+        print(json.dumps(output, ensure_ascii=False))
 else:
-    print("請求失敗，狀態碼:", response.status_code)
+    print(json.dumps({"error": f"請求失敗，狀態碼: {response.status_code}"}, ensure_ascii=False))

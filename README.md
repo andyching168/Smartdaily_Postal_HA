@@ -91,7 +91,91 @@
 
    ```
 
-4. 為了顯示寄放物的圖片，您可以在 Home Assistant 中配置兩個 Template Image：
+4. **（可選）新增寄放物 Slot 1~4 感測器**：如果您想同時顯示多筆未領取的寄放物，可以額外新增以下設定：
+
+   ```yaml
+   command_line:
+      - sensor:
+            name: "寄放物 1"
+            command: "python /config/collection_fetch.py"
+            value_template: "{{ value_json.slot_1.status }}"
+            json_attributes_path: "$.slot_1"
+            json_attributes:
+               - has_item
+               - serial_num
+               - date
+               - from_name
+               - to_name
+               - from_tablet
+               - to_tablet
+               - c_dtype
+               - c_money
+               - sdate
+               - ddate
+               - collection_image
+            scan_interval: 300
+      - sensor:
+            name: "寄放物 2"
+            command: "python /config/collection_fetch.py"
+            value_template: "{{ value_json.slot_2.status }}"
+            json_attributes_path: "$.slot_2"
+            json_attributes:
+               - has_item
+               - serial_num
+               - date
+               - from_name
+               - to_name
+               - from_tablet
+               - to_tablet
+               - c_dtype
+               - c_money
+               - sdate
+               - ddate
+               - collection_image
+            scan_interval: 300
+      - sensor:
+            name: "寄放物 3"
+            command: "python /config/collection_fetch.py"
+            value_template: "{{ value_json.slot_3.status }}"
+            json_attributes_path: "$.slot_3"
+            json_attributes:
+               - has_item
+               - serial_num
+               - date
+               - from_name
+               - to_name
+               - from_tablet
+               - to_tablet
+               - c_dtype
+               - c_money
+               - sdate
+               - ddate
+               - collection_image
+            scan_interval: 300
+      - sensor:
+            name: "寄放物 4"
+            command: "python /config/collection_fetch.py"
+            value_template: "{{ value_json.slot_4.status }}"
+            json_attributes_path: "$.slot_4"
+            json_attributes:
+               - has_item
+               - serial_num
+               - date
+               - from_name
+               - to_name
+               - from_tablet
+               - to_tablet
+               - c_dtype
+               - c_money
+               - sdate
+               - ddate
+               - collection_image
+            scan_interval: 300
+   ```
+
+   > 💡 **提示**：每個 Slot 的 `has_item` 屬性可用於判斷該位置是否有寄放物，方便在 Lovelace 中做條件顯示。
+
+5. 為了顯示寄放物的圖片，您可以在 Home Assistant 中配置 Template Image：
 
    ```yaml
    {{ state_attr("sensor.zui_xin_ji_fang_wu_zhuang_tai", "collection_image") }}
