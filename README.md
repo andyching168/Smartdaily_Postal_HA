@@ -101,6 +101,58 @@
    ```
 這樣，您就可以在 Home Assistant 中查看最新的寄放物狀態、最後領取的寄放物狀態以及相關的圖片等信息。
 
+### 額外配置查看社區公告
+
+如果您想查看社區公告的詳細信息，請按照以下步驟進行設置：
+
+1. 下載在 collection 資料夾內的 `bulletin_fetch.py`，編輯文件中的 `DeviceID` 和 `ComID`（社區ID），將其設置為您的裝置ID和社區ID。
+
+   > 💡 **如何取得社區ID？** 可以使用 `tool/API_Test/main.py` 工具查詢，或在整合設定完成後從 Home Assistant 的實體屬性中取得。
+
+2. 將編輯好的 Python 腳本 (`bulletin_fetch.py`) 上傳到 Home Assistant 的配置資料夾（通常是 `/config` 或 `/homeassistant`）。
+
+3. 在 Home Assistant 的 `configuration.yaml` 文件中添加以下 Command Line Sensor 設置：
+
+   ```yaml
+   command_line:
+      - sensor:
+            name: "社區公告"
+            command: "python /config/bulletin_fetch.py"
+            value_template: "{{ value_json.latest.title }}"
+            json_attributes_path: "$.latest"
+            json_attributes:
+               - id
+               - title
+               - start_date
+               - end_date
+               - content
+               - attachments
+               - attachment_count
+            scan_interval: 3600  # 每小時更新一次
+   ```
+
+4. 這樣您就可以在 Home Assistant 中查看最新的社區公告。公告的屬性包含：
+
+   | 屬性 | 說明 |
+   |------|------|
+   | `title` | 公告標題 |
+   | `content` | 公告內容 |
+   | `start_date` | 公告發布日期 |
+   | `end_date` | 公告結束日期 |
+   | `attachments` | 附件連結列表 |
+   | `attachment_count` | 附件數量 |
+
+5. 若要在 Lovelace 卡片中顯示公告內容，可以使用 Markdown 卡片：
+
+   ```yaml
+   type: markdown
+   content: |
+     ## {{ state_attr('sensor.she_qu_gong_gao', 'title') }}
+     **發布日期：** {{ state_attr('sensor.she_qu_gong_gao', 'start_date') }}
+     
+     {{ state_attr('sensor.she_qu_gong_gao', 'content') }}
+   ```
+
 ## 🔐 給今網的 APP 改善建議
 
 針對目前條碼作為身分驗證憑證（DeviceSn）設計風險，以下為不需修改後端 API 的 UX 層改善提案：
