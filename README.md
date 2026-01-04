@@ -98,7 +98,7 @@
    ```yaml
    command_line:
       - sensor:
-            name: "寄放物 1"
+            name: "Collection 1"
             command: "python /config/collection_fetch.py"
             value_template: "{{ value_json.slot_1.status }}"
             json_attributes_path: "$.slot_1"
@@ -118,7 +118,7 @@
                - collection_image
             scan_interval: 300
       - sensor:
-            name: "寄放物 2"
+            name: "Collection 2"
             command: "python /config/collection_fetch.py"
             value_template: "{{ value_json.slot_2.status }}"
             json_attributes_path: "$.slot_2"
@@ -138,7 +138,7 @@
                - collection_image
             scan_interval: 300
       - sensor:
-            name: "寄放物 3"
+            name: "Collection 3"
             command: "python /config/collection_fetch.py"
             value_template: "{{ value_json.slot_3.status }}"
             json_attributes_path: "$.slot_3"
@@ -158,7 +158,7 @@
                - collection_image
             scan_interval: 300
       - sensor:
-            name: "寄放物 4"
+            name: "Collection 4"
             command: "python /config/collection_fetch.py"
             value_template: "{{ value_json.slot_4.status }}"
             json_attributes_path: "$.slot_4"
