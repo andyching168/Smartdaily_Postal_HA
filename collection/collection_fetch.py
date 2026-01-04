@@ -69,6 +69,7 @@ if response.status_code == 200:
             "c_money": latest_collection["c_money"],
             "sdate": latest_collection["sdate"],
             "ddate": latest_collection["ddate"],
+            "note": latest_collection.get("note", ""),
             "collection_image": collection_image
         }
 
@@ -94,6 +95,7 @@ if response.status_code == 200:
                 "c_money": latest_collected["c_money"],
                 "sdate": latest_collected["sdate"],
                 "ddate": latest_collected["ddate"],
+                "note": latest_collected.get("note", ""),
                 "collection_image": collected_collection_image
             }
         else:
@@ -122,6 +124,7 @@ if response.status_code == 200:
                     "c_money": item["c_money"],
                     "sdate": item["sdate"],
                     "ddate": item["ddate"],
+                    "note": item.get("note", ""),
                     "collection_image": item_image
                 }
             else:
@@ -138,6 +141,7 @@ if response.status_code == 200:
                     "c_money": "",
                     "sdate": "",
                     "ddate": "",
+                    "note": "",
                     "collection_image": ""
                 }
 
@@ -163,6 +167,7 @@ if response.status_code == 200:
             "c_money": "",
             "sdate": "",
             "ddate": "",
+            "note": "",
             "collection_image": ""
         }
         output = {

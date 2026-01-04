@@ -67,6 +67,7 @@
                - c_money
                - sdate
                - ddate
+               - note
                - collection_image
                - uncollected_count
             scan_interval: 300
@@ -86,6 +87,7 @@
                - c_money
                - sdate
                - ddate
+               - note
                - collection_image
             scan_interval: 300
 
@@ -112,6 +114,7 @@
                - c_money
                - sdate
                - ddate
+               - note
                - collection_image
             scan_interval: 300
       - sensor:
@@ -131,6 +134,7 @@
                - c_money
                - sdate
                - ddate
+               - note
                - collection_image
             scan_interval: 300
       - sensor:
@@ -150,6 +154,7 @@
                - c_money
                - sdate
                - ddate
+               - note
                - collection_image
             scan_interval: 300
       - sensor:
@@ -169,6 +174,7 @@
                - c_money
                - sdate
                - ddate
+               - note
                - collection_image
             scan_interval: 300
    ```
