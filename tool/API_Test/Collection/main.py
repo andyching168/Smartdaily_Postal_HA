@@ -102,6 +102,7 @@ if response.status_code == 200:
         print(f'現金金額: {collection["c_money"]}')
         print(f'寄放日期: {collection["sdate"]}')
         print(f'領取日期: {collection["ddate"]}')
+        print(f'備註: {collection["note"]}')
         print(f'寄放物照片(如果可用): {collection["CollectionImage"]}')
         
 else:
