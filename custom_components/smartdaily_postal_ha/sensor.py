@@ -261,11 +261,9 @@ class PackageTrackerSensor(CoordinatorEntity, Entity):
         if latest_package is None:
             return {}
 
-        # Process postal_img
+        # Process postal_img (保留完整 URL，包含 Google Cloud Storage 簽名參數)
         postal_img_url = latest_package.get("postal_img", "")
-        if postal_img_url:
-            postal_img_url = postal_img_url.split("?")[0]
-        else:
+        if not postal_img_url:
             postal_img_url = "Unavailable"
 
         # Update global image URL for camera
@@ -364,11 +362,9 @@ class PackageSlotSensor(CoordinatorEntity, Entity):
                 "has_package": False
             }
 
-        # Process postal_img
+        # Process postal_img (保留完整 URL，包含 Google Cloud Storage 簽名參數)
         postal_img_url = package.get("postal_img", "")
-        if postal_img_url:
-            postal_img_url = postal_img_url.split("?")[0]
-        else:
+        if not postal_img_url:
             postal_img_url = "Unavailable"
 
         return {
