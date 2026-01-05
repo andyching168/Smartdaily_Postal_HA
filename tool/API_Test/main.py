@@ -101,6 +101,51 @@ def get_user_postal_list(auth_token, community_id):
     except (json.JSONDecodeError, KeyError) as e:
         print(f"無法解析包裹清單 JSON: {e}")
 
+
+def get_user_return_postal_list(auth_token, community_id):
+    """獲取指定社區的退貨清單"""
+    url = f"https://api.smartdaily.com.tw/api/Postal/getReturnPostalList?com_id={community_id}"
+    headers = {
+        "Connection": "keep-alive",
+        "KingnetAuth": auth_token,
+        "Accept": "application/json, text/plain, */*"
+    }
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        print("成功取得退貨清單，結果如下:")
+        data = response.json()
+        print("------ 美化輸出 ------")
+        for package in data.get("Data", []):
+            status_val = package.get("p_status", package.get("status"))
+            if status_val in (0, 1):
+                status_text = "未取件"
+            elif status_val == 2:
+                status_text = "已取件"
+            else:
+                status_text = f"狀態碼: {status_val if status_val is not None else '未知'}"
+
+            logistics_text = package.get("postal_logisticsText") or package.get("logisticsName", "Unavailable")
+            print(f'#{package.get("serial_num", "?")} {package.get("create_date", "?")} {status_text}')
+            print(f'內容: {package.get("postal_typeText", "?")}')
+            print(f'條碼: {package.get("transport_code", "?")}')
+            print(f'物流: {logistics_text}')
+            print(f'存放位置: {package.get("tablet_note", package.get("p_note", "?"))}')
+            if package.get("postal_img"):
+                print(f'包裹照片: {package.get("postal_img", "?")}')
+            if package.get("sign_image"):
+                print(f'簽收照片: {package.get("sign_image", "?")}')
+            retuen_date = package.get("retuen_date")  # API 拼字如此
+            if retuen_date:
+                print(f'退貨日期: {retuen_date}')
+            print("-----------")
+    except requests.exceptions.RequestException as e:
+        print(f"獲取退貨清單失敗: {e}")
+        if 'response' in locals():
+            print(response.text)
+    except (json.JSONDecodeError, KeyError) as e:
+        print(f"無法解析退貨清單 JSON: {e}")
+
 def get_community_announcements(auth_token, community_id):
     """獲取並讓使用者選擇社區公告"""
     list_url = f"https://api.smartdaily.com.tw/api/v3.24/Announcement/Community/List?ComId={community_id}&Offset=0&MaxCount=10"
@@ -289,10 +334,11 @@ def main():
         print(f" 使用者: {profile['name']} | DeviceID: {device_id} | 社區: {profile['community_name']} ({com_id})")
         print("="*50)
         print(" 1. 查詢包裹")
-        print(" 2. 查詢寄放物")
-        print(" 3. 查詢公告")
-        print(" 4. 全部查詢")
-        print(" 5. 離開")
+        print(" 2. 查詢退貨包裹")
+        print(" 3. 查詢寄放物")
+        print(" 4. 查詢公告")
+        print(" 5. 全部查詢")
+        print(" 6. 離開")
         print("="*50)
         
         menu_choice = input("請選擇功能: ").strip()
@@ -300,16 +346,19 @@ def main():
         if menu_choice == '1':
             get_user_postal_list(auth_token, com_id)
         elif menu_choice == '2':
-            get_user_deposited_items(auth_token, com_id)
+            get_user_return_postal_list(auth_token, com_id)
         elif menu_choice == '3':
-            get_community_announcements(auth_token, com_id)
+            get_user_deposited_items(auth_token, com_id)
         elif menu_choice == '4':
+            get_community_announcements(auth_token, com_id)
+        elif menu_choice == '5':
             print("\n--- 執行全部查詢 ---")
             get_user_postal_list(auth_token, com_id)
+            get_user_return_postal_list(auth_token, com_id)
             get_user_deposited_items(auth_token, com_id)
             get_community_announcements(auth_token, com_id)
             print("\n--- 全部查詢完畢 ---")
-        elif menu_choice == '5':
+        elif menu_choice == '6':
             print("感謝使用，再見！")
             break
         else:

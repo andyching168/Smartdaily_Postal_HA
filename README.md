@@ -191,6 +191,44 @@
    ```
 這樣，您就可以在 Home Assistant 中查看最新的寄放物狀態、最後領取的寄放物狀態以及相關的圖片等信息。
 
+### 額外配置查看退貨包裹
+
+若您的社區有啟用退貨功能，可用單獨腳本查詢：
+
+1. 下載 `collection` 資料夾內的 `return_postal_fetch.py`，編輯檔案中的 `DeviceID` 與 `ComID`（社區ID）。
+   - `DeviceID` 取得方式同前述條碼掃描步驟。
+   - `ComID` 可用 `tool/API_Test/main.py` 查詢，或在整合完成後從 Home Assistant 實體屬性取得。
+2. 將編輯好的 `return_postal_fetch.py` 上傳到 Home Assistant 的配置資料夾（通常是 `/config` 或 `/homeassistant`）。
+3. 在 `configuration.yaml` 中新增 Command Line Sensor：
+
+   ```yaml
+   command_line:
+      - sensor:
+            name: "退貨包裹最新狀態"
+            command: "python /config/return_postal_fetch.py"
+            value_template: "{{ value_json.latest.status }}"
+            json_attributes_path: "$.latest"
+            json_attributes:
+               - serial_num
+               - create_date
+               - transport_code
+               - postal_type
+               - logistics
+               - storage
+               - image
+               - sign_image
+               - return_date
+               - status_code
+            scan_interval: 300
+      - sensor:
+            name: "退貨包裹數量"
+            command: "python /config/return_postal_fetch.py"
+            value_template: "{{ value_json.count }}"
+            scan_interval: 300
+   ```
+
+4. `return_postal_fetch.py` 也會輸出完整 `items` 陣列（前端或自訂卡片可直接取用）。
+
 ### 額外配置查看社區公告
 
 如果您想查看社區公告的詳細信息，請按照以下步驟進行設置：
