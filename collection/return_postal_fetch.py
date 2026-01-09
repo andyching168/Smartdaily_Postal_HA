@@ -19,9 +19,9 @@ RETURN_URL = "https://api.smartdaily.com.tw/api/Postal/getReturnPostalList?com_i
 
 
 def _status_text(status_val):
-    if status_val in (0, 1):
+    if status_val == 0:
         return "未取件"
-    if status_val == 2:
+    if status_val == 1:
         return "已取件"
     return f"未知狀態({status_val})" if status_val is not None else "未知"
 
