@@ -3,7 +3,7 @@
         "step": {
             "user": {
                 "title": "連接智生活API",
-                "description": "請先照Github說明( https://github.com/andyching168/Smartdaily_Postal_HA )，透過條碼辨識，複製設備ID後，填入框內",
+                "description": "⚠️ 【免責聲明】本工具僅供學術研究與個人自動化用途，開發者不對使用本工具所造成的任何帳號異常、資料外洩負責。請勿使用本工具存取非您本人授權的帳號或社區資料。\n\n🔒 【資安風險提示】您的 Device ID (條碼) 等同於您的長期登入憑證，擁有此 ID 者可查閱您的姓名、電話、地址、包裹紀錄。請確保您不在公共電腦運行此程式，並在使用後妥善保管。\n\n📋 請先照 Github 說明 (https://github.com/andyching168/Smartdaily_Postal_HA)，透過條碼辨識，複製設備ID後，填入框內。繼續設定即表示您已閱讀並同意上述條款。",
                 "data": {
                     "DeviceID": "設備ID"
                 }
@@ -12,8 +12,8 @@
                 "title": "選擇社區",
                 "description": "請選擇欲追蹤之社區",
                 "data": {
-                      "com_id": "社區"
-                  }
+                    "com_id": "社區"
+                }
             }
         },
         "error": {
